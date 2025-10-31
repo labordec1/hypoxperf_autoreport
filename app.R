@@ -11,11 +11,11 @@ source("plot.R")
 
 # Charger les données
 test_new <- read_excel(paste(app_dir,"/Suivi Hbmass_FFTri_V2.xlsx", sep=""), 
-                                    col_types = c("text", "numeric", "text", 
-                                                  "text", "text", "text", "text", "date", 
-                                                  "numeric", "numeric", "numeric", "numeric", "numeric", 
-                                                  "numeric", "numeric", "numeric", "numeric", "numeric", 
-                                                  "numeric"))
+                       col_types = c("text", "numeric", "text", 
+                                     "text", "text", "text", "text", "date", 
+                                     "numeric", "numeric", "numeric", "numeric", "numeric", 
+                                     "numeric", "numeric", "numeric", "numeric", "numeric", 
+                                     "numeric"))
 
 # Liste des athlètes uniques
 athletes <- unique(test_new$id_athlete)
@@ -146,22 +146,25 @@ server <- function(input, output, session) {
       
       # Créer un fichier LaTeX pour l'en-tête
       header_tex <- file.path(tempdir(), "header.tex")
-      header_tex_content <- c(
-        "\\usepackage{fancyhdr}",
-        "\\usepackage{graphicx}",
-        "\\fancyhf{}",
-        sprintf("\\rhead{\\includegraphics[width=4cm]{%s}}", tempImage),  # Chemin absolu
-        "\\renewcommand{\\headrulewidth}{0.4pt}",
-        "\\fancypagestyle{plain}{",
-        "\\fancyhf{}",
-        sprintf("\\rhead{\\includegraphics[width=4cm]{%s}}", tempImage),  # Chemin absolu
-        "\\renewcommand{\\headrulewidth}{0.4pt}",
-        "}",
-        "\\pagestyle{fancy}",
-        "\\setlength{\\headheight}{40pt}",
-        "\\setlength{\\headsep}{30pt}"
+      writeLines(
+        c(
+          "\\usepackage{fancyhdr}",
+          "\\usepackage{graphicx}",
+          "\\fancyhf{}",
+          "\\rhead{\\includegraphics[width=4cm]{header_image.png}}",
+          "\\renewcommand{\\headrulewidth}{0.4pt}", 
+          "\\fancypagestyle{plain}{",
+          "\\fancyhf{}",
+          "\\rhead{\\includegraphics[width=4cm]{header_image.png}}",
+          "\\renewcommand{\\headrulewidth}{0.4pt}",
+          "}",
+          "\\pagestyle{fancy}",
+          "\\setlength{\\headheight}{40pt}",
+          "\\setlength{\\headsep}{30pt}"
+          
+        ),
+        header_tex
       )
-      writeLines(header_tex_content, header_tex)
       
       rmd_content <- c(
         rmd_content,
