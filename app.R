@@ -115,7 +115,7 @@ server <- function(input, output, session) {
       tempData <- tempfile(fileext = ".rda")
       save(data_to_save, file = tempData)
       
-      image_path <- "~/Documents/DU DATAS/STAGE/HYPOXPERF - SpO2/rapport/photos/logo.png"  
+      image_path <- paste(app_dir,"/photo/logo.png", sep="")  
       tempImage <- file.path(tempdir(), "header_image.png")
       file.copy(image_path, tempImage, overwrite = TRUE)
       
