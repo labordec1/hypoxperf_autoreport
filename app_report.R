@@ -11,11 +11,11 @@ source("plot.R")
 
 # Charger les données
 test_new <- read_excel(paste(app_dir,"/Suivi Hbmass_FFTri_V2.xlsx", sep=""), 
-                                    col_types = c("text", "numeric", "text", 
-                                                  "text", "text", "text", "text", "date", 
-                                                  "numeric", "numeric", "numeric", "numeric", "numeric", 
-                                                  "numeric", "numeric", "numeric", "numeric", "numeric", 
-                                                  "numeric"))
+                       col_types = c("text", "numeric", "text", 
+                                     "text", "text", "text", "text", "date", 
+                                     "numeric", "numeric", "numeric", "numeric", "numeric", 
+                                     "numeric", "numeric", "numeric", "numeric", "numeric", 
+                                     "numeric"))
 
 # Liste des athlètes uniques
 athletes <- unique(test_new$id_athlete)
@@ -115,7 +115,7 @@ server <- function(input, output, session) {
       tempData <- tempfile(fileext = ".rda")
       save(data_to_save, file = tempData)
       
-      image_path <- "~/Documents/DU DATAS/STAGE/HYPOXPERF - SpO2/rapport/photos/logo.png"  
+      image_path <- paste(app_dir,"/photos/header_image.png", sep="")  
       tempImage <- file.path(tempdir(), "header_image.png")
       file.copy(image_path, tempImage, overwrite = TRUE)
       
