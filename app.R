@@ -115,7 +115,7 @@ server <- function(input, output, session) {
       tempData <- tempfile(fileext = ".rda")
       save(data_to_save, file = tempData)
       
-      image_path <- paste(app_dir,"/photos/header_image.png", sep="")  
+      image_path <- paste(app_dir,"/photos/header_image.png", sep="") 
       tempImage <- file.path(tempdir(), "header_image.png")
       file.copy(image_path, tempImage, overwrite = TRUE)
       
