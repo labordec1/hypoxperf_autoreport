@@ -107,30 +107,30 @@ server <- function(input, output, session) {
   # Générer le rapport PDF
   output$export <- downloadHandler(
     filename = function() {
-      paste("Rapport_", input$athlete,"_",Sys.Date(), ".pdf", sep = "")
+      paste("Rapport_", input$athlete, "_", Sys.Date(), ".pdf", sep = "")
     },
     content = function(file) {
-      # Sauvegarder les données filtrées
       data_to_save <- filtered_data()
       tempData <- tempfile(fileext = ".rda")
       save(data_to_save, file = tempData)
       
-      image_path <- paste(app_dir,"/photos/header_image.png", sep="") 
+      image_path <- paste(app_dir, "/photos/header_image.png", sep = "")
       tempImage <- file.path(tempdir(), "header_image.png")
       file.copy(image_path, tempImage, overwrite = TRUE)
       
-      # Créer le fichier Rmd
+      # Vérifie que l'image existe et est valide
+      if (!file.exists(tempImage)) {
+        stop("L'image temporaire n'a pas été copiée.")
+      }
+      
       tempReport <- file.path(tempdir(), "report.Rmd")
       
-      # Contenu de base du rapport avec en-tête personnalisé
       rmd_content <- c(
         "---",
         "title: \"Rapport des données\"",
         "date: \"`r Sys.Date()`\"",
         "output:",
         "  pdf_document:",
-        "    includes:",
-        "      in_header: header.tex",  # Fichier LaTeX pour l'en-tête
         "---",
         "",
         "```{r setup, include=FALSE}",
@@ -141,35 +141,11 @@ server <- function(input, output, session) {
         sprintf("load('%s')", tempData),
         "data <- data_to_save",
         "```",
-        ""
-      )
-      
-      # Créer un fichier LaTeX pour l'en-tête
-      header_tex <- file.path(tempdir(), "header.tex")
-      writeLines(
-        c(
-          "\\usepackage{fancyhdr}",
-          "\\usepackage{graphicx}",
-          "\\fancyhf{}",
-          "\\rhead{\\includegraphics[width=4cm]{header_image.png}}",
-          "\\renewcommand{\\headrulewidth}{0.4pt}", 
-          "\\fancypagestyle{plain}{",
-          "\\fancyhf{}",
-          "\\rhead{\\includegraphics[width=4cm]{header_image.png}}",
-          "\\renewcommand{\\headrulewidth}{0.4pt}",
-          "}",
-          "\\pagestyle{fancy}",
-          "\\setlength{\\headheight}{40pt}",
-          "\\setlength{\\headsep}{30pt}"
-          
-        ),
-        header_tex
-      )
-      
-      rmd_content <- c(
-        rmd_content,
-        "```{r}",
+        "",
+        "```{r, echo=FALSE}",
+        sprintf("knitr::include_graphics('%s')", tempImage),
         "```",
+        "",
         paste0("### Athlète : ", input$athlete),
         ""
       )
@@ -209,10 +185,10 @@ server <- function(input, output, session) {
       # Nettoyer
       unlink(tempData)
       unlink(tempReport)
-      unlink(header_tex)
       unlink(tempImage)
     }
   )
+  
   
 }
 
