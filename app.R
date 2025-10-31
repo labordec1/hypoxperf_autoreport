@@ -115,7 +115,7 @@ server <- function(input, output, session) {
       tempData <- tempfile(fileext = ".rda")
       save(data_to_save, file = tempData)
       
-      image_path <- paste(app_dir,"/photo/logo.png", sep="")  
+      image_path <- paste(app_dir,"/photos/header_image.png", sep="")  
       tempImage <- file.path(tempdir(), "header_image.png")
       file.copy(image_path, tempImage, overwrite = TRUE)
       
@@ -145,22 +145,23 @@ server <- function(input, output, session) {
       )
       
       # Créer un fichier LaTeX pour l'en-tête
-     header_tex_content <- c(
-  "\\usepackage{fancyhdr}",
-  "\\usepackage{graphicx}",
-  "\\fancyhf{}",
-  sprintf("\\rhead{\\includegraphics[width=4cm]{%s}}", tempImage),  # Chemin absolu
-  "\\renewcommand{\\headrulewidth}{0.4pt}",
-  "\\fancypagestyle{plain}{",
-  "\\fancyhf{}",
-  sprintf("\\rhead{\\includegraphics[width=4cm]{%s}}", tempImage),  # Chemin absolu
-  "\\renewcommand{\\headrulewidth}{0.4pt}",
-  "}",
-  "\\pagestyle{fancy}",
-  "\\setlength{\\headheight}{40pt}",
-  "\\setlength{\\headsep}{30pt}"
-)
-writeLines(header_tex_content, header_tex)
+      header_tex <- file.path(tempdir(), "header.tex")
+      header_tex_content <- c(
+        "\\usepackage{fancyhdr}",
+        "\\usepackage{graphicx}",
+        "\\fancyhf{}",
+        sprintf("\\rhead{\\includegraphics[width=4cm]{%s}}", tempImage),  # Chemin absolu
+        "\\renewcommand{\\headrulewidth}{0.4pt}",
+        "\\fancypagestyle{plain}{",
+        "\\fancyhf{}",
+        sprintf("\\rhead{\\includegraphics[width=4cm]{%s}}", tempImage),  # Chemin absolu
+        "\\renewcommand{\\headrulewidth}{0.4pt}",
+        "}",
+        "\\pagestyle{fancy}",
+        "\\setlength{\\headheight}{40pt}",
+        "\\setlength{\\headsep}{30pt}"
+      )
+      writeLines(header_tex_content, header_tex)
       
       rmd_content <- c(
         rmd_content,
